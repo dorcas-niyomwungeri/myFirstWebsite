@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expense Tracker</title>
+<style>
+body { margin:0; font-family: Arial, Helvetica, sans-serif; background:#f5f6fa; }
+nav { background:#1e293b; color:white; padding:15px 40px; display:flex; justify-content:space-between; align-items:center; }
+nav h2 { margin:0; }
+nav ul { list-style:none; display:flex; gap:25px; margin:0; padding:0; }
+nav li { cursor:pointer; }
+nav li button { background: #2563eb; color:white; border:none; padding:8px 15px; border-radius:6px; cursor:pointer; font-weight:bold; }
+nav li button:hover { background:#1d4ed8; }
+.container { padding:40px; }
+button.primary { background:#2563eb; color:white; border:none; padding:12px 20px; border-radius:8px; cursor:pointer; }
+button.primary:hover { background:#1d4ed8; }
+table { width:100%; border-collapse:collapse; margin-top:20px; background:white; border-radius:10px; overflow:hidden; box-shadow:0 5px 20px rgba(0,0,0,.08); }
+th, td { padding:14px; text-align:left; border-bottom:1px solid #eee; }
+th { background:#f1f5f9; }
+.modal { position:fixed; inset:0; background:rgba(0,0,0,.4); display:none; justify-content:center; align-items:center; }
+.modal-content { background:white; padding:25px; border-radius:12px; width:350px; }
+.modal-content h3 { margin-top:0; }
+input, select { width:100%; padding:10px; margin:8px 0 16px; border-radius:6px; border:1px solid #ddd; }
+.btns-cont { display:flex; justify-content:space-between; align-items:center; width:100%; }
+.secondary { background-color: rgb(209, 209, 209); border:none; padding:12px 20px; border-radius:8px; cursor:pointer; }
+#showSummary { padding:10px 20px; background-color:#2563eb; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold; transition: background-color 0.3s; }
+#showSummary:hover { background-color:#1d4ed8; }
+</style>
+</head>
+<body>
+
+<nav>
+  <h2>Finance Tracker</h2>
+  <ul>
+    <li class="active"><button>Expenses</button></li>
+    <li><button onclick="locat()">Debts</button></li>
+    <li><button onclick="income()">Income</button></li>
+    <li><button id="showSummary" onclick="sum()">Show Summary</button></li>
+  </ul>
+</nav>
+
+<div class="container">
+  <button class="primary" onclick="openModal()">+ Record Expense</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Reason</th>
+        <th>Amount</th>
+        <th>Currency</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody id="expenses"></tbody>
+  </table>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h3>Record Expense</h3>
+    <form onsubmit="save(event)">
+      <label>Reason</label>
+      <input type="text" id="reason" required />
+      <label>Amount</label>
+      <input type="number" id="amount" required />
+      <div class="btns-cont">
+        <button class="secondary" type="button" onclick="closeModal()">Cancel</button>
+        <button class="primary">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+const BASE_URL = "http://localhost:3000";
+function locat (){
+    window.location.href="file:///C:/Users/USER1/finance-management/debt.html"
+}
+function income (){
+    window.location.href="file:///C:/Users/USER1/finance-management/income.html"
+}
+function sum (){
+    window.location.href="file:///C:/Users/USER1/finance-management/summary.html"
+}
+
+function openModal() { document.getElementById("modal").style.display = "flex"; }
+function closeModal() { 
+  document.getElementById("modal").style.display = "none"; 
+  document.getElementById("reason").value = "";
+  document.getElementById("amount").value = "";
+}
+function sum() { window.location.href = "summary.html"; }
+
+async function save(event){
+  event.preventDefault();
+  const reason = document.getElementById("reason").value;
+  const amount = document.getElementById("amount").value;
+
+  await fetch(`${BASE_URL}/expenses/create`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ reason, amount })
+  });
+
+  closeModal();
+  getExpenses();
+}
+
+async function getExpenses(){
+  const res = await fetch(`${BASE_URL}/expenses/read`, { method: "POST" });
+  const data = await res.json();
+  const tbody = document.getElementById("expenses");
+  tbody.innerHTML = "";
+  data.forEach(e => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${e.id}</td>
+        <td>${e.reason}</td>
+        <td>${Number(e.amount).toLocaleString()}</td>
+        <td>RWF</td>
+        <td>${new Date(e.created_at).toLocaleString()}</td>
+      </tr>
+    `;
+  });
+}
+
+getExpenses();
+</script>
+
+</body>
+</html>

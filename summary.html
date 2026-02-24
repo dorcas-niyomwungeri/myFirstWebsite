@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finance Tracker - Summary</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f5f6fa;
+    padding: 0;
+}
+
+/* NAVBAR */
+nav {
+    background: #1e293b;
+    color: white;
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav h2 { margin: 0; }
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+}
+
+nav li { cursor: pointer; }
+nav li button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+nav li button:hover { background: #1d4ed8; }
+
+/* Container */
+.container {
+    padding: 40px;
+}
+
+/* Summary Box */
+#summaryResult{
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,.08);
+    margin-top: 20px;
+}
+
+#summaryResult h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+/* Table for history */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,.08);
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+
+th { background: #f1f5f9; }
+
+button#showSummary {
+    padding: 10px 20px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+button#showSummary:hover {
+    background-color: #1d4ed8;
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <h2>Finance Tracker</h2>
+  <ul>
+    <li><button onclick="loca()">Expenses</button></li>
+    <li><button onclick="debt()">Debts</button></li>
+    <li><button onclick="incom()">Income</button></li>
+    <li><button id="showSummary">Show Summary</button></li>
+  </ul>
+</nav>
+
+<div class="container">
+  <div id="summaryResult">
+    <h3>Current Summary</h3>
+    <p>Click "Show Summary" to load totals.</p>
+  </div>
+
+  <h3>History</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Total Expense</th>
+        <th>Total Debt</th>
+        <th>Total Income</th>
+        <th>Remainder</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody id="historyTable">
+      <!-- History rows will appear here -->
+    </tbody>
+  </table>
+</div>
+
+<script>
+const BASE_URL = "http://localhost:3000";
+function loca (){
+    window.location.href="file:///C:/Users/USER1/finance-management/expense.html"
+}
+function incom (){
+    window.location.href="file:///C:/Users/USER1/finance-management/income.html"
+}
+function debt (){
+    window.location.href="file:///C:/Users/USER1/finance-management/debt.html"
+}
+
+async function loadSummary() {
+  try {
+    // Fetch all tables
+    const [incomeRes, expenseRes, debtRes] = await Promise.all([
+      fetch(`${BASE_URL}/income/read`, { method: "POST" }),
+      fetch(`${BASE_URL}/expenses/read`, { method: "POST" }),
+      fetch(`${BASE_URL}/debts/read`, { method: "POST" })
+    ]);
+
+    const incomes = await incomeRes.json();
+    const expenses = await expenseRes.json();
+    const debts = await debtRes.json();
+
+    // Calculate totals
+    const totalIncome = incomes.reduce((sum, i) => sum + Number(i.amount), 0);
+    const totalExpense = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
+    const totalDebt = debts.reduce((sum, d) => sum + Number(d.amount), 0);
+    const remainder = totalIncome - (totalExpense + totalDebt);
+
+    // Show current summary
+    document.getElementById("summaryResult").innerHTML = `
+      <h3>Current Summary</h3>
+      <p><strong>Total Income:</strong> ${totalIncome.toLocaleString()} RWF</p>
+      <p><strong>Total Expense:</strong> ${totalExpense.toLocaleString()} RWF</p>
+      <p><strong>Total Debt:</strong> ${totalDebt.toLocaleString()} RWF</p>
+      <p><strong>Remainder:</strong> ${remainder.toLocaleString()} RWF</p>
+    `;
+
+    // Show history (sort by latest first)
+    const tbody = document.getElementById("historyTable");
+    tbody.innerHTML = "";
+    const history = incomes.map((inc, i) => ({
+      id: i+1,
+      totalIncome,
+      totalExpense,
+      totalDebt,
+      remainder,
+      createdAt: new Date().toLocaleString()
+    }));
+
+    history.forEach(row => {
+      tbody.innerHTML += `
+        <tr>
+          <td>${row.id}</td>
+          <td>${row.totalExpense.toLocaleString()}</td>
+          <td>${row.totalDebt.toLocaleString()}</td>
+          <td>${row.totalIncome.toLocaleString()}</td>
+          <td>${row.remainder.toLocaleString()}</td>
+          <td>${row.createdAt}</td>
+        </tr>
+      `;
+    });
+
+  } catch(err) {
+    console.error(err);
+    alert("Failed to load summary. Make sure your server is running.");
+  }
+}
+
+document.getElementById("showSummary").addEventListener("click", loadSummary);
+</script>
+
+</body>
+</html>
