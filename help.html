@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+             margin:0; font-family: Arial, 
+             Helvetica,
+             sans-serif;
+             background:#f5f6fa; 
+            }
+        nav {
+             background:#1e293b;
+             color:white;
+             padding:15px 40px;
+             display:flex;
+             justify-content:space-between;
+             align-items:center; 
+            }
+            ul{
+             list-style: none;
+             display: flex;
+             gap: 7px;
+            }
+            button{
+                background-color: #1451d3;
+                 padding: 12px 20px; 
+                 border: none;      
+                 cursor: pointer;
+                 border-radius: 3px;
+            }
+            button:hover{
+                background-color: #719bde;
+            }
+            .help-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #f0f1f3;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+.help-container h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #2563eb;
+}
+
+.help-container ul {
+    padding-left: 20px;
+}
+
+.help-container li {
+    margin-bottom: 10px;
+}
+.tip-box {
+    background-color: #e0f2fe;
+    padding: 15px;
+    border-left: 5px solid #0284c7;
+    margin: 20px auto;
+    max-width: 600px;
+    border-radius: 8px;
+}
+    </style>
+</head>
+<body>
+    <nav>
+  <h2>Finance Tracker</h2>
+  <ul>
+    <li><button onclick="locate()">Expenses</button></li>
+    <li><button onclick="locat()">Debts</button></li>
+    <li><button onclick="income()">Income</button></li>
+    <li><button id="showSummary" onclick="sum()">Show Summary</button></li>
+    <li class="active"><button onclick="getHelp()">HELP</button></li>
+  </ul>
+</nav>
+<main>
+    <p>
+        Welcome to the Finance Management System. Here you can add, view, and manage your financial records easily. 
+Use the menu to navigate, click "Add" to create new records, and check summaries to track your totals. 
+Everything is organized to help you manage your finances quickly and efficiently.
+    </p> 
+    <div class="help-container">
+    <h2>How to Use This Website</h2>
+    <ul>
+        <li>Use the navigation bar to move between pages.</li>
+        <li>Click buttons to add or manage data.</li>
+        <li>Fill in all required fields before submitting forms.</li>
+        <li>Check summaries to see totals and reports.</li>
+    </ul>
+</div>
+<div class="tip-box">
+    💡 Tip: Always double-check your data before submitting to avoid errors.
+</div>  
+</main>
+<script>
+    function locat (){
+    window.location.href="file:///C:/Users/USER1/finance-management/debt.html"
+}
+function income (){
+    window.location.href="file:///C:/Users/USER1/finance-management/income.html"
+}
+function sum (){
+    window.location.href="file:///C:/Users/USER1/finance-management/summary.html"
+}
+function locate (){
+    window.location.href="file:///C:/Users/USER1/finance-management/expense.html"
+}
+</script>
+</body>
+</html>

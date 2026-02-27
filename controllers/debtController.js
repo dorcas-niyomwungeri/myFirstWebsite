@@ -4,17 +4,20 @@ const prisma = new PrismaClient();
 // Create single debt
 const createDebt = async (req, res) => {
   try {
-    const { name, amount } = req.body;
+    console.log("new debt");
+    const { debtor, amount } = req.body;
+    console.log(debtor, amount);
 
     const newDebt = await prisma.debt.create({
       data: {
-        name,
+        debtor,
         amount: parseFloat(amount)
       }
     });
-
+    console.log("debtor saved!")
     res.status(201).json(newDebt);
   } catch (error) {
+    console.log(err)
     res.status(500).json({ error: error.message });
   }
 };

@@ -10,3 +10,4 @@ router.post("/create", createDebt);
 router.post("/read", getAllDebts);
 
 module.exports = router;
+

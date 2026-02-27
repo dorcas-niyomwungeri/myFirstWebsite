@@ -7,3 +7,4 @@ router.post("/create", createIncome);
 router.post("/read", getAllIncome);
 
 module.exports = router;
+

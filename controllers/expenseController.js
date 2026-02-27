@@ -4,17 +4,18 @@ const prisma = new PrismaClient();
 // Create expense
 const createExpense = async (req, res) => {
   try {
-    const { title, amount } = req.body;
-
+    const { reason, amount } = req.body;
+    console.log("expenses requested")
     const newExpense = await prisma.expenses.create({
       data: {
-        title,
+        reason,
         amount: parseFloat(amount)
       }
     });
-
+    console.log("Expense created")
     res.status(201).json(newExpense);
   } catch (error) {
+    console.log("error")
     res.status(500).json({ error: error.message });
   }
 };

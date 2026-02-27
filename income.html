@@ -37,6 +37,7 @@ input { width:100%; padding:10px; margin:8px 0 16px; border-radius:6px; border:1
     <li><button onclick="debt()">Debts</button></li>
     <li class="active"><button>Income</button></li>
     <li><button id="showSummary" onclick="sum()">Show Summary</button></li>
+    <li><button onclick="help()">HELP</button></li>
   </ul>
 </nav>
 
@@ -67,7 +68,7 @@ input { width:100%; padding:10px; margin:8px 0 16px; border-radius:6px; border:1
       <input type="number" id="amount" required />
       <div class="btns-cont">
         <button class="secondary" type="button" onclick="closeModal()">Cancel</button>
-        <button class="primary">Save</button>
+        <button class="primary" type="submit">Save</button>
       </div>
     </form>
   </div>
@@ -84,6 +85,9 @@ function debt (){
 }
 function sum (){
     window.location.href="file:///C:/Users/USER1/finance-management/summary.html"
+}
+function help(){
+  window.location.href="file:///C:/Users/USER1/finance-management/help.html"
 }
 
 function openModal() { document.getElementById("modal").style.display = "flex"; }
